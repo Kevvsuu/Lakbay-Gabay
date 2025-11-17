@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourism Map Color Palettes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .palette-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .palette-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .palette-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .palette-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .palette-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .color-strip {
+            display: flex;
+            height: 80px;
+        }
+        
+        .color-block {
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .color-block:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .color-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px;
+            font-size: 0.7rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .color-block:hover .color-info {
+            opacity: 1;
+        }
+        
+        .palette-details {
+            padding: 20px;
+        }
+        
+        .use-cases {
+            margin-top: 15px;
+        }
+        
+        .use-cases h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .use-cases ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        
+        .use-cases li {
+            margin-bottom: 4px;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .use-cases li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        .best-practices {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .best-practices h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .practice-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .practice-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .practice-item p {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Tourism Map Website Color Palettes</h1>
+        
+        <div class="palette-grid">
+            <!-- Ocean Explorer -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Ocean Explorer</div>
+                    <div class="palette-description">Perfect for coastal destinations and water activities</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #0077be;">
+                        <div class="color-info">#0077be<br>Ocean Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #00a8cc;">
+                        <div class="color-info">#00a8cc<br>Turquoise</div>
+                    </div>
+                    <div class="color-block" style="background: #40e0d0;">
+                        <div class="color-info">#40e0d0<br>Aqua</div>
+                    </div>
+                    <div class="color-block" style="background: #f0f8ff;">
+                        <div class="color-info">#f0f8ff<br>Alice Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #2c3e50;">
+                        <div class="color-info">#2c3e50<br>Dark Slate</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>Beach and coastal tourism sites</li>
+                            <li>Marine activity bookings</li>
+                            <li>Island destination guides</li>
+                            <li>Water sports platforms</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#0077be, #00a8cc, #40e0d0, #f0f8ff, #2c3e50')">Copy Palette</button>
+                </div>
+            </div>
+            
+            <!-- Forest Adventure -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Forest Adventure</div>
+                    <div class="palette-description">Ideal for nature trails and eco-tourism</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #228b22;">
+                        <div class="color-info">#228b22<br>Forest Green</div>
+                    </div>
+                    <div class="color-block" style="background: #32cd32;">
+                        <div class="color-info">#32cd32<br>Lime Green</div>
+                    </div>
+                    <div class="color-block" style="background: #90ee90;">
+                        <div class="color-info">#90ee90<br>Light Green</div>
+                    </div>
+                    <div class="color-block" style="background: #f0fff0;">
+                        <div class="color-info">#f0fff0<br>Honeydew</div>
+                    </div>
+                    <div class="color-block" style="background: #8b4513;">
+                        <div class="color-info">#8b4513<br>Saddle Brown</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>National park websites</li>
+                            <li>Hiking and trekking guides</li>
+                            <li>Wildlife tourism</li>
+                            <li>Eco-lodge bookings</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#228b22, #32cd32, #90ee90, #f0fff0, #8b4513')">Copy Palette</button>
+                </div>
+            </div>
+            
+            <!-- Mountain Peak -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Mountain Peak</div>
+                    <div class="palette-description">Great for alpine destinations and adventure sports</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #4682b4;">
+                        <div class="color-info">#4682b4<br>Steel Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #87ceeb;">
+                        <div class="color-info">#87ceeb<br>Sky Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #e0e0e0;">
+                        <div class="color-info">#e0e0e0<br>Light Gray</div>
+                    </div>
+                    <div class="color-block" style="background: #fffafa;">
+                        <div class="color-info">#fffafa<br>Snow</div>
+                    </div>
+                    <div class="color-block" style="background: #696969;">
+                        <div class="color-info">#696969<br>Dim Gray</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>Mountain resort websites</li>
+                            <li>Ski destination guides</li>
+                            <li>Alpine hiking maps</li>
+                            <li>Winter sports booking</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#4682b4, #87ceeb, #e0e0e0, #fffafa, #696969')">Copy Palette</button>
+                </div>
+            </div>
+            
+            <!-- Desert Sunset -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Desert Sunset</div>
+                    <div class="palette-description">Perfect for warm climate and desert destinations</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #cd853f;">
+                        <div class="color-info">#cd853f<br>Peru</div>
+                    </div>
+                    <div class="color-block" style="background: #ff6347;">
+                        <div class="color-info">#ff6347<br>Tomato</div>
+                    </div>
+                    <div class="color-block" style="background: #ffd700;">
+                        <div class="color-info">#ffd700<br>Gold</div>
+                    </div>
+                    <div class="color-block" style="background: #fff8dc;">
+                        <div class="color-info">#fff8dc<br>Cornsilk</div>
+                    </div>
+                    <div class="color-block" style="background: #8b4513;">
+                        <div class="color-info">#8b4513<br>Saddle Brown</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>Desert tourism sites</li>
+                            <li>Middle Eastern destinations</li>
+                            <li>Cultural heritage tours</li>
+                            <li>Adventure desert experiences</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#cd853f, #ff6347, #ffd700, #fff8dc, #8b4513')">Copy Palette</button>
+                </div>
+            </div>
+            
+            <!-- Urban Explorer -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Urban Explorer</div>
+                    <div class="palette-description">Modern and sleek for city tourism platforms</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #2c3e50;">
+                        <div class="color-info">#2c3e50<br>Midnight Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #3498db;">
+                        <div class="color-info">#3498db<br>Peter River</div>
+                    </div>
+                    <div class="color-block" style="background: #ecf0f1;">
+                        <div class="color-info">#ecf0f1<br>Clouds</div>
+                    </div>
+                    <div class="color-block" style="background: #ffffff;">
+                        <div class="color-info">#ffffff<br>White</div>
+                    </div>
+                    <div class="color-block" style="background: #e74c3c;">
+                        <div class="color-info">#e74c3c<br>Alizarin</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>City guide websites</li>
+                            <li>Business travel platforms</li>
+                            <li>Metropolitan attractions</li>
+                            <li>Urban hotel bookings</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#2c3e50, #3498db, #ecf0f1, #ffffff, #e74c3c')">Copy Palette</button>
+                </div>
+            </div>
+            
+            <!-- Tropical Paradise -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <div class="palette-name">Tropical Paradise</div>
+                    <div class="palette-description">Vibrant colors for exotic island destinations</div>
+                </div>
+                <div class="color-strip">
+                    <div class="color-block" style="background: #ff6b35;">
+                        <div class="color-info">#ff6b35<br>Orange Red</div>
+                    </div>
+                    <div class="color-block" style="background: #f7931e;">
+                        <div class="color-info">#f7931e<br>Orange</div>
+                    </div>
+                    <div class="color-block" style="background: #00b4d8;">
+                        <div class="color-info">#00b4d8<br>Cyan</div>
+                    </div>
+                    <div class="color-block" style="background: #90e0ef;">
+                        <div class="color-info">#90e0ef<br>Light Blue</div>
+                    </div>
+                    <div class="color-block" style="background: #03045e;">
+                        <div class="color-info">#03045e<br>Navy</div>
+                    </div>
+                </div>
+                <div class="palette-details">
+                    <div class="use-cases">
+                        <h4>Best for:</h4>
+                        <ul>
+                            <li>Tropical island resorts</li>
+                            <li>Caribbean destinations</li>
+                            <li>Beach vacation packages</li>
+                            <li>Sunset cruise bookings</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyPalette('#ff6b35, #f7931e, #00b4d8, #90e0ef, #03045e')">Copy Palette</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="best-practices">
+            <h2>🎨 Best Practices for Tourism Map Websites</h2>
+            <div class="practices-grid">
+                <div class="practice-item">
+                    <h3>🎯 Accessibility First</h3>
+                    <p>Ensure sufficient contrast ratios (4.5:1 minimum) and test with colorblind users. Use patterns or icons alongside colors for critical information.</p>
+                </div>
+                
+                <div class="practice-item">
+                    <h3>📱 Mobile Optimization</h3>
+                    <p>Colors should remain vibrant and legible on smaller screens. Test your palette across different devices and lighting conditions.</p>
+                </div>
+                
+                <div class="practice-item">
+                    <h3>🗺️ Map Integration</h3>
+                    <p>Choose colors that complement popular map styles (Google Maps, OpenStreetMap). Avoid colors that clash with map elements.</p>
+                </div>
+                
+                <div class="practice-item">
+                    <h3>🎭 Emotional Connection</h3>
+                    <p>Colors should evoke the destination's mood - blues for coastal, greens for nature, warm tones for cultural experiences.</p>
+                </div>
+                
+                <div class="practice-item">
+                    <h3>⚡ Performance</h3>
+                    <p>Limit your palette to 5-7 colors maximum to maintain visual consistency and reduce cognitive load for users.</p>
+                </div>
+                
+                <div class="practice-item">
+                    <h3>🌐 Cultural Sensitivity</h3>
+                    <p>Research color meanings in your target markets. What's appealing in one culture may have negative connotations in another.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyPalette(colors) {
+            navigator.clipboard.writeText(colors).then(function() {
+                // Create a temporary notification
+                const notification = document.createElement('div');
+                notification.textContent = 'Palette copied to clipboard!';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #27ae60;
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    font-weight: bold;
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            });
+        }
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

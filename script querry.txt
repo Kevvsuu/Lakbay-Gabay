@@ -1,0 +1,187 @@
+CREATE TABLE spot_info (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    category ENUM(
+        'Beaches & Islands',
+        'Nature & Wildlife',
+        'Urban & Nightlife',
+        'Adventure & Extreme Sports',
+        'Arts & Culture',
+        'Festivals & Events',
+        'Culinary & Food',
+        'Spiritual & Pilgrimage',
+        'Wellness, Retreats, and Leisure',
+        'Hidden Wonders'
+    ) NOT NULL,
+    image VARCHAR(255),
+    overview TEXT,
+    region VARCHAR(255) NOT NULL,
+    province VARCHAR(255) NOT NULL,
+    municipality VARCHAR(255) NOT NULL,
+    things_to_do TEXT,
+    operating_hours TEXT,
+    nearby_accommodations TEXT,
+    nearby_restaurants TEXT,
+    contact_information TEXT,
+    official_links TEXT,
+    transportation TEXT,
+    top_position DECIMAL(5,2) NOT NULL,
+    left_position DECIMAL(5,2) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-------------------- original
+
+CREATE TABLE spot_info (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    category ENUM(
+        'Beaches & Islands',
+        'Nature & Wildlife',
+        'Urban & Nightlife',
+        'Adventure & Extreme Sports',
+        'Arts & Culture',
+        'Festivals & Events',
+        'UNESCO Sites',
+        'Spiritual & Pilgrimage',
+        'Wellness, Retreats, and Leisure',
+        'Hidden Wonders'
+    ) NOT NULL,
+    image VARCHAR(255),
+    overview TEXT,
+    region VARCHAR(255) NOT NULL,
+    province VARCHAR(255) NOT NULL,
+    municipality VARCHAR(255) NOT NULL,
+    things_to_do TEXT,
+    operating_hours TEXT,
+    nearby_accommodations TEXT,
+    nearby_restaurants TEXT,
+    contact_information TEXT,
+    official_links TEXT,
+    transportation TEXT,
+    top_position DECIMAL(5,2) NOT NULL,
+    left_position DECIMAL(5,2) NOT NULL,
+
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+UPDATE spot_info SET featured = 1 WHERE id IN (78, 79, 92, 93, 94, 95);
+ALTER TABLE spot_info ADD featured TINYINT(1) DEFAULT 0;
+UPDATE spot_info SET featured = 1 WHERE id IN (1, 5, 10); -- Example IDs
+
+
+
+ALTER TABLE spot_info 
+MODIFY COLUMN category ENUM(
+    'Beaches & Islands',
+    'Nature & Wildlife',
+    'Urban & Nightlife',
+    'Adventure & Extreme Sports',
+    'Arts & Culture',
+    'Festivals & Events',
+    'UNESCO Sites',
+    'Spiritual & Pilgrimage',
+    'Wellness, Retreats, and Leisure',
+    'Hidden Wonders'
+) NOT NULL;
+
+CREATE TABLE spot_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    spot_id INT,
+    image_path VARCHAR(255),
+    owner_name VARCHAR(255) DEFAULT NULL;
+    FOREIGN KEY (spot_id) REFERENCES spot_info(id)
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add bookmarks table
+CREATE TABLE bookmarks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    spot_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (spot_id) REFERENCES spot_info(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_bookmark (user_id, spot_id)
+);
+
+CREATE TABLE ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    spot_id INT NOT NULL,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (spot_id) REFERENCES spot_info(id)
+);
+
+
+CREATE TABLE admin_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    last_login TIMESTAMP NULL
+);
+
+
+INSERT INTO admin_users (username, password, last_login) VALUES (
+    'admin', 
+    'admin', 
+    NULL
+);
+
+
+CREATE TABLE translations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    translation_key VARCHAR(255) NOT NULL UNIQUE,
+    en TEXT NOT NULL,
+    ko TEXT,
+    zh TEXT,
+    ja TEXT,
+    ms TEXT
+);
+
+
+finaldata
+CREATE TABLE spot_info (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(265) NOT NULL,
+    category ENUM(
+        'Beaches & Islands',
+        'Nature & Wildlife',
+        'Urban & Nightlife',
+        'Adventure & Extreme Sports',
+        'Arts & Culture',
+        'Festivals & Events',
+        'UNESCO Sites',
+        'Spiritual & Pilgrimage',
+        'Wellness, Retreats, and Leisure',
+        'Hidden Wonders'
+    ) NOT NULL,
+    image VARCHAR(265) DEFAULT NULL,
+    overview TEXT DEFAULT NULL,
+    region VARCHAR(265) NOT NULL,
+    province VARCHAR(265) NOT NULL,
+    municipality VARCHAR(265) NOT NULL,
+    things_to_do TEXT DEFAULT NULL,
+    operating_hours TEXT DEFAULT NULL,
+    nearby_accommodations TEXT DEFAULT NULL,
+    nearby_restaurants TEXT DEFAULT NULL,
+    contact_information TEXT DEFAULT NULL,
+    official_link TEXT DEFAULT NULL,
+    transportation TEXT DEFAULT NULL,
+    top_position DECIMAL(5,2) NOT NULL,
+    left_position DECIMAL(5,2) NOT NULL,
+    safety_level ENUM('safe', 'caution', 'dangerous') DEFAULT 'safe',
+    annual_visitors INT(11) DEFAULT 0,
+    featured TINYINT(1) DEFAULT 0,
+    PRIMARY KEY (id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;

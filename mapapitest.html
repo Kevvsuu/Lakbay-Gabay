@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map with Side Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #map {
+            flex: 1;
+            height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        #destination-panel {
+            width: 0;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        #destination-panel.active {
+            width: 500px;
+        }
+
+        .panel-content {
+            padding: 20px;
+            display: none;
+        }
+
+        #destination-panel.active .panel-content {
+            display: block;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff5252;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: #ff1744;
+        }
+
+        .destination-image {
+            width: 100%;
+            height: 300px;
+            background: #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .destination-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .destination-category {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stars {
+            color: #f39c12;
+            font-size: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+            margin-bottom: -2px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .info-text {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        /* Custom marker cluster styling */
+        .marker-cluster-small {
+            background-color: rgba(181, 226, 140, 0.6);
+        }
+        .marker-cluster-small div {
+            background-color: rgba(110, 204, 57, 0.6);
+        }
+
+        .marker-cluster-medium {
+            background-color: rgba(241, 211, 87, 0.6);
+        }
+        .marker-cluster-medium div {
+            background-color: rgba(240, 194, 12, 0.6);
+        }
+
+        .marker-cluster-large {
+            background-color: rgba(253, 156, 115, 0.6);
+        }
+        .marker-cluster-large div {
+            background-color: rgba(241, 128, 23, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="map"></div>
+        
+        <div id="destination-panel">
+            <button class="close-btn" onclick="closePanel()">×</button>
+            <div class="panel-content">
+                <div class="destination-image" id="dest-image">
+                    [Image Placeholder]
+                </div>
+                
+                <h1 class="destination-title" id="dest-title">Destination Name</h1>
+                <span class="destination-category" id="dest-category">Category</span>
+                
+                <div class="rating">
+                    <span class="stars">★★★★☆</span>
+                    <span id="dest-rating">4.5 / 5</span>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('overview')">Overview</button>
+                    <button class="tab" onclick="showTab('details')">Details</button>
+                    <button class="tab" onclick="showTab('reviews')">Reviews</button>
+                </div>
+                
+                <div id="overview" class="tab-content active">
+                    <div class="info-section">
+                        <div class="info-label">About</div>
+                        <div class="info-text" id="dest-description">
+                            This is a placeholder description for the destination. It will contain interesting information about the place, its history, and what visitors can expect.
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">Location</div>
+                        <div class="info-text" id="dest-location">
+                            Location details will appear here
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="details" class="tab-content">
+                    <div class="info-section">
+                        <div class="info-label">Established Date</div>
+                        <div class="info-text">2020</div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">Best Time to Visit</div>
+                        <div class="info-text">Year-round, peak season December-February</div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-label">Entrance Fee</div>
+                        <div class="info-text">Free / Varies</div>
+                    </div>
+                </div>
+                
+                <div id="reviews" class="tab-content">
+                    <div class="info-section">
+                        <div class="info-label">Recent Reviews</div>
+                        <div class="info-text">
+                            Reviews will be displayed here. User ratings and comments about the destination.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+    <script>
+        // Initialize map centered on Philippines
+        const map = L.map('map').setView([12.8797, 121.7740], 6);
+
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Sample destinations data
+        const destinations = [
+            {
+                id: 1,
+                name: 'Binondo Chinatown',
+                lat: 14.6042,
+                lon: 120.9822,
+                category: 'Urban & Nightlife',
+                description: 'The oldest Chinatown in the world, Binondo offers a rich cultural experience with authentic Chinese-Filipino cuisine, historical landmarks, and vibrant street life.',
+                location: 'Manila, Metro Manila',
+                rating: 4.5
+            },
+            {
+                id: 2,
+                name: 'Rizal Park',
+                lat: 14.5832,
+                lon: 120.9797,
+                category: 'Arts & Culture',
+                description: 'A historic urban park dedicated to national hero José Rizal. Features monuments, gardens, and museums showcasing Filipino history and culture.',
+                location: 'Manila, Metro Manila',
+                rating: 4.3
+            },
+            {
+                id: 3,
+                name: 'Mall of Asia',
+                lat: 14.5355,
+                lon: 120.9823,
+                category: 'Urban & Nightlife',
+                description: 'One of the largest shopping malls in Asia, offering world-class shopping, dining, entertainment, and a stunning bay view.',
+                location: 'Pasay, Metro Manila',
+                rating: 4.6
+            },
+            {
+                id: 4,
+                name: 'Intramuros',
+                lat: 14.5896,
+                lon: 120.9750,
+                category: 'Arts & Culture',
+                description: 'The historic walled city of Manila, featuring Spanish colonial architecture, churches, museums, and cobblestone streets.',
+                location: 'Manila, Metro Manila',
+                rating: 4.7
+            },
+            {
+                id: 5,
+                name: 'BGC (Bonifacio Global City)',
+                lat: 14.5507,
+                lon: 121.0494,
+                category: 'Urban & Nightlife',
+                description: 'A modern business and lifestyle district with upscale dining, shopping, art galleries, and green spaces.',
+                location: 'Taguig, Metro Manila',
+                rating: 4.4
+            },
+            {
+                id: 6,
+                name: 'National Museum',
+                lat: 14.5833,
+                lon: 120.9810,
+                category: 'Arts & Culture',
+                description: 'A premier cultural institution housing extensive collections of Philippine art, archaeology, and natural history.',
+                location: 'Manila, Metro Manila',
+                rating: 4.8
+            },
+            {
+                id: 7,
+                name: 'Poblacion, Makati',
+                lat: 14.5636,
+                lon: 121.0267,
+                category: 'Urban & Nightlife',
+                description: 'A trendy neighborhood known for its vibrant nightlife, craft bars, street art, and diverse dining options.',
+                location: 'Makati, Metro Manila',
+                rating: 4.2
+            }
+        ];
+
+        // Create marker cluster group
+        const markers = L.markerClusterGroup({
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+
+        // Create custom icon
+        const customIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', // Replace with your pin image URL
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41], // Size of the icon [width, height]
+            iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
+            popupAnchor: [1, -34], // Point from which the popup should open relative to the iconAnchor
+            shadowSize: [41, 41] // Size of the shadow
+        });
+
+        // Add markers for each destination
+        destinations.forEach(dest => {
+            const marker = L.marker([dest.lat, dest.lon], {
+                icon: customIcon // Use custom icon
+            });
+            
+            // Add click event to open side panel
+            marker.on('click', function() {
+                openDestinationPanel(dest);
+            });
+            
+            // Optional: Add small tooltip on hover
+            marker.bindTooltip(dest.name, {
+                permanent: false,
+                direction: 'top'
+            });
+            
+            markers.addLayer(marker);
+        });
+
+        map.addLayer(markers);
+
+        // Function to open destination panel
+        function openDestinationPanel(destination) {
+            const panel = document.getElementById('destination-panel');
+            panel.classList.add('active');
+            
+            // Update panel content
+            document.getElementById('dest-title').textContent = destination.name;
+            document.getElementById('dest-category').textContent = destination.category;
+            document.getElementById('dest-description').textContent = destination.description;
+            document.getElementById('dest-location').textContent = destination.location;
+            document.getElementById('dest-rating').textContent = `${destination.rating} / 5`;
+            
+            // Update stars display
+            const stars = '★'.repeat(Math.floor(destination.rating)) + '☆'.repeat(5 - Math.floor(destination.rating));
+            document.querySelector('.stars').textContent = stars;
+        }
+
+        // Function to close panel
+        function closePanel() {
+            const panel = document.getElementById('destination-panel');
+            panel.classList.remove('active');
+        }
+
+        // Function to switch tabs
+        function showTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+    </script>
+</body>
+</html>

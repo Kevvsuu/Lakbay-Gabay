@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazard Risk Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .control-group {
+            margin-bottom: 10px;
+        }
+        
+        .control-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .hazard-marker {
+            background-color: #ff4444;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+        
+        .risk-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 200px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 15px;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+        }
+        
+        .high { background-color: #ff4444; }
+        .medium { background-color: #ffaa00; }
+        .low { background-color: #44ff44; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- Map Controls -->
+    <div class="map-controls">
+        <div class="control-group">
+            <label>Map Type:</label>
+            <select id="mapType">
+                <option value="street">Street Map</option>
+                <option value="terrain">Terrain</option>
+                <option value="satellite">Satellite</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Hazard Layer:</label>
+            <select id="hazardType">
+                <option value="earthquake">Earthquake Risk</option>
+                <option value="flood">Flood Risk</option>
+                <option value="landslide">Landslide Risk</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Risk Legend -->
+    <div class="risk-legend">
+        <div class="legend-title">Risk Level</div>
+        <div class="legend-item">
+            <div class="legend-color high"></div>
+            <span>High Risk</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color medium"></div>
+            <span>Medium Risk</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color low"></div>
+            <span>Low Risk</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // Initialize map - Philippines coordinates
+        var map = L.map('map').setView([12.8797, 121.7740], 6);
+        
+        // Different tile layers (all FREE)
+        var tileLayers = {
+            street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }),
+            terrain: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenTopoMap contributors'
+            }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri'
+            })
+        };
+        
+        // Default layer
+        tileLayers.street.addTo(map);
+        var currentLayer = tileLayers.street;
+        
+        // Sample hazard points (you can replace with your PHP/database data)
+        var hazardPoints = [
+            {coords: [14.5995, 120.9842], risk: 'high', info: 'Manila - High Earthquake Risk', type: 'earthquake'},
+            {coords: [10.7202, 122.5621], risk: 'medium', info: 'Iloilo - Medium Flood Risk', type: 'flood'},
+            {coords: [7.1907, 125.4553], risk: 'high', info: 'Davao - High Landslide Risk', type: 'landslide'},
+            {coords: [16.4023, 120.5960], risk: 'low', info: 'Baguio - Low Risk Area', type: 'earthquake'},
+            {coords: [13.7565, 123.7584], risk: 'medium', info: 'Naga - Medium Typhoon Risk', type: 'flood'}
+        ];
+        
+        // Add hazard markers
+        var markers = [];
+        hazardPoints.forEach(function(point) {
+            var color = point.risk === 'high' ? '#ff4444' : 
+                       point.risk === 'medium' ? '#ffaa00' : '#44ff44';
+            
+            var marker = L.circleMarker(point.coords, {
+                radius: 8,
+                fillColor: color,
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+            
+            marker.bindPopup(`
+                <div style="padding: 10px;">
+                    <h4 style="margin: 0 0 10px 0; color: ${color};">${point.info}</h4>
+                    <p><strong>Risk Level:</strong> ${point.risk.toUpperCase()}</p>
+                    <p><strong>Hazard Type:</strong> ${point.type.toUpperCase()}</p>
+                </div>
+            `);
+            
+            markers.push({marker: marker, type: point.type});
+        });
+        
+        // Map type control
+        document.getElementById('mapType').addEventListener('change', function(e) {
+            map.removeLayer(currentLayer);
+            currentLayer = tileLayers[e.target.value];
+            currentLayer.addTo(map);
+        });
+        
+        // Hazard type filter
+        document.getElementById('hazardType').addEventListener('change', function(e) {
+            var selectedType = e.target.value;
+            
+            markers.forEach(function(item) {
+                if (selectedType === 'all' || item.type === selectedType) {
+                    map.addLayer(item.marker);
+                } else {
+                    map.removeLayer(item.marker);
+                }
+            });
+        });
+        
+        // Add scale control
+        L.control.scale().addTo(map);
+    </script>
+</body>
+</html>
